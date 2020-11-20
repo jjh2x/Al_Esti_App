@@ -1,9 +1,15 @@
 package com.example.al_esti_app;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 
-import android.app.SearchManager;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,23 +17,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.Socket;
-import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     Button startBtn, chauBtn, emerBtn;
-    TextView penalView, tempaView;
-
+    TextView penalView, BAC_View;
+    GradientDrawable BAC_Back;
     Socket socket = null;
 
     @Override
@@ -38,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
         startBtn = (Button) findViewById(R.id.startBtn);
         chauBtn = (Button) findViewById(R.id.chauBtn);
         emerBtn = (Button) findViewById(R.id.emerBtn);
-        tempaView = (TextView) findViewById(R.id.tempaView);
+        BAC_View = (TextView) findViewById(R.id.tempaView);
+        BAC_Back = (GradientDrawable) ContextCompat.getDrawable(this, R.drawable.oval);
 
 
 
@@ -64,19 +64,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        chauBtn.setOnClickListener(new View.OnClickListener()
-
-        {
-            public void onClick (View v){
+        chauBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=%EB%8C%80%EB%A6%AC%EC%9A%B4%EC%A0%84"));
                 startActivity(intent);
             }
         });
 
-        emerBtn.setOnClickListener(new View.OnClickListener()
-
-        {
-            public void onClick (View v){
+        emerBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 Uri uri = Uri.parse("tel:119");
                 Intent intent = new Intent(Intent.ACTION_DIAL, uri);
                 startActivity(intent);
@@ -146,7 +142,23 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            tempaView.setText(response);
+            BAC_View.setText(response);
+            double k = Double.parseDouble(response);
+
+            //BAC(혈중알콜농도)가 0.03을 초과하면 하게 되는 동작.
+            if(k >= 0.03) {
+                // BAC 표시하는 텍스트 밑에 깔린 원판(TextView - drawable) 색깔 변경.
+                Drawable roundDrawable = getResources().getDrawable(R.drawable.oval);
+                roundDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    BAC_View.setBackgroundDrawable(roundDrawable);
+                } else {
+                    BAC_View.setBackground(roundDrawable);
+                }
+
+                //모터 동작 중지.
+                //대리운전 링크 연결.
+            }
             super.onPostExecute(result);
         }
     }
