@@ -1,12 +1,10 @@
 package com.example.al_esti_app;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -20,12 +18,11 @@ import android.widget.TextView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
-    Button startBtn, chauBtn, emerBtn;
+    Button startBtn, chauBtn, emerBtn, cancelBtn;
     TextView penalView, BAC_View;
     GradientDrawable BAC_Back;
     Socket socket = null;
@@ -38,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
         startBtn = (Button) findViewById(R.id.startBtn);
         chauBtn = (Button) findViewById(R.id.chauBtn);
         emerBtn = (Button) findViewById(R.id.emerBtn);
+        cancelBtn = (Button) findViewById(R.id.cancelBtn);
         BAC_View = (TextView) findViewById(R.id.tempaView);
         BAC_Back = (GradientDrawable) ContextCompat.getDrawable(this, R.drawable.oval);
-
         emerBtn.setBackgroundColor(Color.RED);
 
 
@@ -82,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
         /* 알코올 일정 수치 이상일 시, 다이얼로그 출력.
         .setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
-    public class MyClientTask extends AsyncTask<Void, Void, Void> {
+    public class MyClientTask extends AsyncTask<Void, String, Void> {
         String response = "";
 
         @Override
@@ -127,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                     byteArrayOutputStream.write(buffer, 0, bytesRead);
                     response += byteArrayOutputStream.toString("UTF-8");
+                    publishProgress(response);
+                    Thread.sleep(2000);
                 }
             } catch (UnknownHostException e) {
                 e.printStackTrace();
@@ -134,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
                 response = "IOException: " + e.toString();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             } finally {
                 if (socket != null) {
                     try {
@@ -146,13 +153,12 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-        @Override
-        protected void onPostExecute(Void result) {
+        protected void onProgressUpdate(String... values) {
             BAC_View.setText(response);
             double k = Double.parseDouble(response);
 
             //BAC(혈중알콜농도)가 0.03을 초과하면 하게 되는 동작.
-            if(k >= 0.03) {
+            if (k >= 0.03) {
                 // BAC 표시하는 텍스트 밑에 깔린 원판(TextView - drawable) 색깔 변경.
                 Drawable roundDrawable = getResources().getDrawable(R.drawable.oval);
                 roundDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
@@ -161,10 +167,13 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     BAC_View.setBackground(roundDrawable);
                 }
-
-                //모터 동작 중지.
-                //대리운전 링크 연결.
             }
+        }
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+            BAC_View.setText("음주 측정이 완료되었습니다.");
             super.onPostExecute(result);
         }
     }
