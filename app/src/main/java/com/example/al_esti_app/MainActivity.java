@@ -41,9 +41,6 @@ public class MainActivity extends AppCompatActivity {
         BAC_Back = (GradientDrawable) ContextCompat.getDrawable(this, R.drawable.oval);
 
 
-
-
-
         /*.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dialogView = (View) View.inflate(MainActivity.this, R.layout.dialog2, null);
