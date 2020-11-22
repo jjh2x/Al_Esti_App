@@ -20,6 +20,7 @@ import android.widget.TextView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         emerBtn = (Button) findViewById(R.id.emerBtn);
         BAC_View = (TextView) findViewById(R.id.tempaView);
         BAC_Back = (GradientDrawable) ContextCompat.getDrawable(this, R.drawable.oval);
+
+        emerBtn.setBackgroundColor(Color.RED);
 
 
 
@@ -110,7 +113,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 socket = new Socket("192.168.0.80", 8888);
 
-                //송신 없음
+                //송신 (없음)
+                /*OutputStream out = socket.getOutputStream();
+                out.write(myMessage.getBytes());*/
+
 
                 //수신
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
