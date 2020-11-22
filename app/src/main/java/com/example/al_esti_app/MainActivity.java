@@ -41,9 +41,6 @@ public class MainActivity extends AppCompatActivity {
         emerBtn.setBackgroundColor(Color.RED);
 
 
-
-
-
         /*.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dialogView = (View) View.inflate(MainActivity.this, R.layout.dialog2, null);
