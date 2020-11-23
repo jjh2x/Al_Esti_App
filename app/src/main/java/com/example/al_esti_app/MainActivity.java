@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         startBtn = (Button) findViewById(R.id.startBtn);
         chauBtn = (Button) findViewById(R.id.chauBtn);
         emerBtn = (Button) findViewById(R.id.emerBtn);
-        cancelBtn = (Button) findViewById(R.id.cancelBtn);
         BAC_View = (TextView) findViewById(R.id.tempaView);
         BAC_Back = (GradientDrawable) ContextCompat.getDrawable(this, R.drawable.oval);
         emerBtn.setBackgroundColor(Color.RED);
