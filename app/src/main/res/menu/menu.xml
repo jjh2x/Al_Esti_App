@@ -3,4 +3,7 @@
     <item
         android:id="@+id/PenalView"
         android:title="처벌기준"/>
+    <item
+        android:id="@+id/PenalView2"
+        android:title="신체변화"/>
 </menu>
