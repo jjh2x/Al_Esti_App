@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                BAC_View.setText("측정중...");
                 MyClientTask myClientTask = new MyClientTask();
                 myClientTask.execute();
             }
